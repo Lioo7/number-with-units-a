@@ -55,7 +55,7 @@ namespace ariel
         friend NumberWithUnits operator*=(double num, const NumberWithUnits &element);
 
         // friend global overloading I/O operators
-        friend ostream &operator<<(ostream &os, const NumberWithUnits &input);
-        friend ostream &operator>>(ostream &os, const NumberWithUnits &output);
+        friend std::istream &operator<<(istream &os, const NumberWithUnits &input);
+        friend std::ostream &operator>>(ostream &os, NumberWithUnits &output);
     };
 }
