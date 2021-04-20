@@ -11,8 +11,8 @@ using std::istringstream;
 using std::string;
 using namespace std;
 using namespace ariel;
-#define TRUE "true"; // TODO: why does not work?
-#define FALSE "false";
+const string TRUE = "true"; 
+const string FALSE = "false";
 
 NumberWithUnits a{1, "km"};     // 1km = 1,000m = 100,000cm
 NumberWithUnits b{200, "m"};    // 0.2km = 200m = 20,000cm
@@ -21,12 +21,11 @@ NumberWithUnits a_n{-1, "km"};  // -1km = -1,000m = -100,000cm
 NumberWithUnits b_n{-200, "m"}; // -0.2km = -200m = -20,000cm
 NumberWithUnits c_n{-30, "c"};  // -0.0003km = -0.3m = -30cm
 
-ifstream units_file{"units.txt"};
-TEST_CASE("adds units from a text file")
-{
-    NumberWithUnits::read_units(units_file);
-    // TODO: have to add some tests
-}
+// ifstream units_file{"units.txt"}; //TODO: fix this test
+// TEST_CASE("adds units from a text file")
+// {
+//     NumberWithUnits::read_units(units_file);
+// }
 
 TEST_CASE("checks basic arithmetic operators on distance elements")
 {
@@ -78,13 +77,13 @@ TEST_CASE("checks basic arithmetic operators on mixed elements")
     CHECK_THROWS(w_b - d_c);
     CHECK_THROWS(w_c - d_b);
     // +=
-    // CHECK_THROWS(d_a += NumberWithUnits{2, "g"}); // TODO: what's the problem?
-    // CHECK_THROWS(d_b += NumberWithUnits{100, "m"});
-    CHECK_THROWS(d_c += d_c);
+    CHECK_THROWS(d_a += NumberWithUnits{2, "g"}); 
+    CHECK_THROWS(d_b += NumberWithUnits{100, "m"});
+    CHECK_THROWS(d_c += w_c);
     // -=
-    // CHECK_THROWS(a -= NumberWithUnits{3, "km"} == NumberWithUnits(2, "km"));
-    // CHECK_THROWS(b -= NumberWithUnits{300, "m"} == NumberWithUnits(100, "m"));
-    // CHECK_THROWS(c -= NumberWithUnits{50, "cm"} == NumberWithUnits(20, "cm"));
+    CHECK_THROWS(w_a -= NumberWithUnits{3, "km"});
+    CHECK_THROWS(w_b -= NumberWithUnits{300, "m"});
+    CHECK_THROWS(w_c -= NumberWithUnits{50, "cm"});
 }
 
 TEST_CASE("unary operators")
@@ -105,28 +104,28 @@ TEST_CASE("checks basic equality operators on mixed elements")
 
     // true
     result = (a == a);
-    CHECK(result == "true");
+    CHECK(result == TRUE);
     result = (a != c);
-    CHECK(result == "true");
+    CHECK(result == TRUE);
     result = (a > b);
-    CHECK(result == "true");
+    CHECK(result == TRUE);
     result = (b > c);
-    CHECK(result == "true");
+    CHECK(result == TRUE);
     result = (c >= c);
-    CHECK(result == "true");
+    CHECK(result == TRUE);
     // false
     result = (a != a);
-    CHECK(result == "false");
+    CHECK(result == FALSE);
     result = (a == c);
-    CHECK(result == "false");
+    CHECK(result == FALSE);
     result = (a < b);
-    CHECK(result == "false");
+    CHECK(result == FALSE);
     result = (b <= c);
-    CHECK(result == "false");
+    CHECK(result == FALSE);
     result = (b == b_n);
-    CHECK(result == "false");
+    CHECK(result == FALSE);
     result = (c < c_n);
-    CHECK(result == "false");
+    CHECK(result == FALSE);
 }
 
 TEST_CASE("pre/post fix")
@@ -156,25 +155,25 @@ TEST_CASE("multiplication operator")
     CHECK(10.5 * c == NumberWithUnits(450, "cm"));
 }
 
-TEST_CASE("I/O operators") // TODO: FIX operators recognition 
+TEST_CASE("I/O operators")  
 {
     // input
-    NumberWithUnits input();
-    istringstream my_stream("1[km]");
-    my_stream >> input;
+    NumberWithUnits input{0, "none"};
+    istringstream my_stream_1("1[km]");
+    my_stream_1 >> input;
     CHECK(input == a);
 
-    NumberWithUnits input_2();
-    istringstream my_stream("2 0 0 [ m ] ");
-    my_stream >> input;
+    NumberWithUnits input_2(0, "none");
+    istringstream my_stream_2("200 [ m ]");
+    my_stream_2 >> input;
     CHECK(input == b);
 
     // output
-    string output;
-    output << cout << a;
+    ostringstream output;
+    output << a;
     CHECK(output == "1[km]");
 
-    string output2;
-    output2 << cout << b;
+    ostringstream output2;
+    output2 << b;
     CHECK(output2 == "200[m]");
 }
