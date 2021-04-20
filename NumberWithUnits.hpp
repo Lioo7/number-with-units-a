@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <map>
 #include <string>
 using namespace std;
 
@@ -9,13 +8,32 @@ namespace ariel
     class NumberWithUnits
     {
     private:
-        // bool empty = true;
-        map<double, string> units;
+        double number;
+        string unit;
 
     public:
-        //constructor
-        NumberWithUnits(double number, string unit) {}
-        //destructor
+        // getters
+        double get_number() const
+        {
+            return this->number;
+        }
+
+        string get_unit() const
+        {
+            return this->unit;
+        }
+
+        // setters
+          void set_number(double new_number) 
+        {
+            this->number = new_number;
+        }
+
+        // constructor
+        NumberWithUnits(double number, string unit)
+        {
+        }
+        // destructor
         ~NumberWithUnits(){};
 
         static void read_units(ifstream &file_name);
@@ -31,7 +49,7 @@ namespace ariel
         NumberWithUnits &operator-(); // TODO input?
 
         // overloading equality operators
-        bool operator>(const NumberWithUnits &unit_element); 
+        bool operator>(const NumberWithUnits &unit_element);
         bool operator>=(const NumberWithUnits &unit_element);
         bool operator<(const NumberWithUnits &unit_element);
         bool operator<=(const NumberWithUnits &unit_element);
@@ -48,8 +66,8 @@ namespace ariel
 
         // overloading multiplication operator
         // direction: ->
-        friend NumberWithUnits operator*(const NumberWithUnits &unit_element, double num);
-        friend NumberWithUnits operator*=(const NumberWithUnits &unit_element, double num);
+        NumberWithUnits operator*(double num);
+        NumberWithUnits operator*=(double num);
         // direction: <-
         friend NumberWithUnits operator*(double num, const NumberWithUnits &unit_element);
         friend NumberWithUnits operator*=(double num, const NumberWithUnits &unit_element);
