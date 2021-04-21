@@ -1,75 +1,91 @@
-// #include <iostream>
-// #include <map>
-#include "NumberWithUnits.hpp"
+#include <iostream>
 #include <map>
+#include "NumberWithUnits.hpp"
 using namespace std;
 
 namespace ariel
 {
-    //==============================================constructor=============================================
-    map<string, map<string, double>> units;
-    NumberWithUnits::NumberWithUnits(double number, string unit)
+    void NumberWithUnits::read_units(ifstream &units_file)
     {
-        this->number = number;
-        this->unit = unit;
     }
 
-    //==========================================ultilize functions==========================================
-    void throw_error(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    // overloading the arithmetic operators
+    // positive
+    NumberWithUnits operator+(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
     {
-        string a = unit_element_1.get_unit();
-        string b = unit_element_2.get_unit();
-        throw std::invalid_argument("Units do not match [" + a + "] cannot be converted to [" + b + "]");
+        return unit_element_1;
+    }
+    NumberWithUnits operator+=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    {
+        return unit_element_1;
     }
 
-    bool unit_check(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    NumberWithUnits operator+(const NumberWithUnits &unit_element)
     {
-        bool flag = false; // not equal
-
-        if (unit_element_1.get_unit() == unit_element_2.get_unit())
-        {
-            flag = true;
-        }
-
-        else
-        {
-            for (unit_element : units)
-            {
-                if (unit_element) //TODO: have to add some code here
-            }
-        }
-
-        if (!flag) // if not equal throw error
-        {
-            throw_error(unit_element_1, unit_element_2);
-        }
-
-        return flag;
+        return unit_element;
+    }
+    // negative
+    NumberWithUnits operator-(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    {
+        return unit_element_1;
+    }
+    NumberWithUnits operator-=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    {
+        return unit_element_1;
+    }
+    NumberWithUnits operator-(const NumberWithUnits &unit_element)
+    {
+        return unit_element;
     }
 
-    //==========================================method operators============================================
-    void read_units(ifstream &file_name)
+    // overloading equality operators
+    bool operator>(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
     {
-        // TODO: add some code here
+        return true;
+    }
+    bool operator>=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    {
+        return true;
+    }
+    bool operator<(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    {
+        return true;
+    }
+    bool operator<=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    {
+        return true;
+    }
+    bool operator==(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    {
+        return true;
+    }
+    bool operator!=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    {
+        return true;
     }
 
-    NumberWithUnits NumberWithUnits::operator+(const NumberWithUnits &unit_element)
+    // overloading multiplication operator
+    // direction: ->
+    NumberWithUnits operator*(const NumberWithUnits &unit_element, double num)
     {
-        if (unit_check(*this, unit_element)) // both elements have the same type
-        {
-            double sum = *this.get_number() + unit_element.get_number();
-            NumberWithUnits temp = {sum, unit_element.get_unit()};
-        }
-        return temp;
+        return unit_element;
     }
-
-    NumberWithUnits &operator+=(const NumberWithUnits &unit_element)
+    // NumberWithUnits operator*=(double num); // TODO: ?
+    // direction: <-
+    NumberWithUnits operator*(double num, const NumberWithUnits &unit_element)
     {
-        if (unit_check(*this, unit_element)) // both elements have the same type
-        {
-            this.set_number(*this.get_number() + unit_element.get_number());
-        }
-        return *this;
+        return unit_element;
+    }
+    // friend NumberWithUnits operator*=(double num, const NumberWithUnits &unit_element); // TODO: ?
+
+    // friend global overloading I/O operators
+    std::istream &operator>>(istream &is, const NumberWithUnits &input_unit_element)
+    {
+        return is;
+    }
+    std::ostream &operator<<(ostream &os, const NumberWithUnits &output_unit_element)
+    {
+        return os;
     }
 
 }

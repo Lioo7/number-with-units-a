@@ -30,23 +30,25 @@ namespace ariel
         }
 
         // constructor
-        NumberWithUnits(double number, string unit)
+        NumberWithUnits(double number = 0, string unit = "none")
         {
+            this->number = number;
+            this->unit = unit;
         }
         // destructor
         ~NumberWithUnits(){};
 
-        friend void read_units(ifstream &file_name);
+        static void read_units(std::ifstream &file_name);
 
         // overloading the arithmetic operators
         // positive
         friend NumberWithUnits operator+(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
-        friend NumberWithUnits &operator+=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
-        friend NumberWithUnits &operator+(const NumberWithUnits &unit_element);
+        friend NumberWithUnits operator+=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
+        friend NumberWithUnits operator+(const NumberWithUnits &unit_element);
         // negative
         friend NumberWithUnits operator-(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
-        friend NumberWithUnits &operator-=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
-        friend NumberWithUnits &operator-(const NumberWithUnits &unit_element);
+        friend NumberWithUnits operator-=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
+        friend NumberWithUnits operator-(const NumberWithUnits &unit_element);
 
         // overloading equality operators
         friend bool operator>(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
@@ -69,13 +71,13 @@ namespace ariel
             return *this;
         }
         // postfix
-        NumberWithUnits &operator++(int)
+        NumberWithUnits operator++(int)
         {
             NumberWithUnits original = *this;
             number++;
             return original;
         }
-        NumberWithUnits &operator--(int)
+        NumberWithUnits operator--(int)
         {
             NumberWithUnits original = *this;
             number--;
