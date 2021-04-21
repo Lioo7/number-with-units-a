@@ -77,13 +77,13 @@ TEST_CASE("checks basic arithmetic operators on mixed elements")
     CHECK_THROWS(w_b - d_c);
     CHECK_THROWS(w_c - d_b);
     // +=
-    CHECK_THROWS(d_a += NumberWithUnits{2, "g"}); 
-    CHECK_THROWS(d_b += NumberWithUnits{100, "m"});
+    CHECK_THROWS(d_a += w_a); 
+    CHECK_THROWS(d_b += w_b);
     CHECK_THROWS(d_c += w_c);
     // -=
-    CHECK_THROWS(w_a -= NumberWithUnits{3, "km"});
-    CHECK_THROWS(w_b -= NumberWithUnits{300, "m"});
-    CHECK_THROWS(w_c -= NumberWithUnits{50, "cm"});
+    CHECK_THROWS(w_a -= w_a);
+    CHECK_THROWS(w_b -= w_b);
+    CHECK_THROWS(w_c -= w_c);
 }
 
 TEST_CASE("unary operators")

@@ -24,7 +24,7 @@ namespace ariel
         }
 
         // setters
-          void set_number(double new_number) 
+        void set_number(double new_number)
         {
             this->number = new_number;
         }
@@ -36,41 +36,59 @@ namespace ariel
         // destructor
         ~NumberWithUnits(){};
 
-        static void read_units(ifstream &file_name);
+        friend void read_units(ifstream &file_name);
 
         // overloading the arithmetic operators
         // positive
-        NumberWithUnits operator+(const NumberWithUnits &unit_element);
-        NumberWithUnits &operator+=(const NumberWithUnits &unit_element);
-        NumberWithUnits &operator+(); // TODO ?
+        friend NumberWithUnits operator+(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
+        friend NumberWithUnits &operator+=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
+        friend NumberWithUnits &operator+(const NumberWithUnits &unit_element);
         // negative
-        NumberWithUnits operator-(const NumberWithUnits &unit_element);
-        NumberWithUnits &operator-=(const NumberWithUnits &unit_element);
-        NumberWithUnits &operator-(); // TODO input?
+        friend NumberWithUnits operator-(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
+        friend NumberWithUnits &operator-=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
+        friend NumberWithUnits &operator-(const NumberWithUnits &unit_element);
 
         // overloading equality operators
-        bool operator>(const NumberWithUnits &unit_element);
-        bool operator>=(const NumberWithUnits &unit_element);
-        bool operator<(const NumberWithUnits &unit_element);
-        bool operator<=(const NumberWithUnits &unit_element);
-        bool operator==(const NumberWithUnits &unit_element);
-        bool operator!=(const NumberWithUnits &unit_element);
+        friend bool operator>(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
+        friend bool operator>=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
+        friend bool operator<(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
+        friend bool operator<=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
+        friend bool operator==(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
+        friend bool operator!=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
 
         // overloading increment and decrement operators
         // prefix
-        NumberWithUnits &operator++();
-        NumberWithUnits &operator--();
+        NumberWithUnits &operator++()
+        {
+            number++;
+            return *this;
+        }
+        NumberWithUnits &operator--()
+        {
+            number--;
+            return *this;
+        }
         // postfix
-        NumberWithUnits &operator++(int);
-        NumberWithUnits &operator--(int);
+        NumberWithUnits &operator++(int)
+        {
+            NumberWithUnits original = *this;
+            number++;
+            return original;
+        }
+        NumberWithUnits &operator--(int)
+        {
+            NumberWithUnits original = *this;
+            number--;
+            return original;
+        }
 
         // overloading multiplication operator
         // direction: ->
-        NumberWithUnits operator*(double num);
-        NumberWithUnits operator*=(double num);
+        friend NumberWithUnits operator*(const NumberWithUnits &unit_element, double num);
+        // NumberWithUnits operator*=(double num); // TODO: ?
         // direction: <-
         friend NumberWithUnits operator*(double num, const NumberWithUnits &unit_element);
-        friend NumberWithUnits operator*=(double num, const NumberWithUnits &unit_element);
+        // friend NumberWithUnits operator*=(double num, const NumberWithUnits &unit_element); // TODO: ?
 
         // friend global overloading I/O operators
         friend std::istream &operator>>(istream &is, const NumberWithUnits &input_unit_element);
