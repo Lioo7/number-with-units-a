@@ -32,8 +32,8 @@ namespace ariel
         // constructor
         NumberWithUnits(double number = 0, string unit = "none")
         {
-            this->number = number;
-            this->unit = unit;
+            // this->number = number;
+            // this->unit = unit;
         }
         // destructor
         ~NumberWithUnits(){};
