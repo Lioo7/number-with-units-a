@@ -1,9 +1,10 @@
 #include <iostream>
 #include <map>
+#include <cmath>
 #include "NumberWithUnits.hpp"
 using namespace std;
 map<string, map<string, double>> units_map;
-const double epsilon = 0.001; // TODO: 001 or 0001?
+const double epsilon = 0.001;
 
 namespace ariel
 {
@@ -16,22 +17,47 @@ namespace ariel
 
     //==========================================ultilize functions==========================================
 
-    // This function throws an error when gets invalid input 
-    void throw_error(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    // This function throws an error when gets invalid input
+    void NumberWithUnits::throw_error(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
     {
-        string a = unit_element_1.get_unit();
-        string b = unit_element_2.get_unit();
+        string a = unit_element_1.unit;
+        string b = unit_element_2.unit;
         throw std::invalid_argument("Units do not match [" + a + "] cannot be converted to [" + b + "]");
     }
 
-    // This function check is both of the elements are valid
-    bool unit_check(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    // This function check is the element is valid
+    bool NumberWithUnits::is_valid(const NumberWithUnits &unit_element_1)
     {
+        return (units_map.count(unit_element_1.unit) > 0);
     }
 
-    // This function convert the unit if it's possible
-    void unit_convert(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    // This function convert the unit if it's possible and necessary
+    double NumberWithUnits::unit_convert(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
     {
+        double ans = unit_element_2.number;
+        // checks if both of the elements are valid
+        if (!is_valid(unit_element_1) || !is_valid(unit_element_2))
+        {
+            throw_error;
+        }
+        // checks if both the elments have the same unit
+        else if (unit_element_1.unit == unit_element_2.unit)
+        {
+            return ans;
+        }
+        // checks if is it possible to convert
+        else if (units_map[unit_element_1.unit].count(unit_element_2.unit) < 1)
+        {
+            throw_error;
+        }
+        // returns the convert number(second number * ratio)
+        else
+        {
+            double second_number = unit_element_2.number;
+            double ratio = units_map[unit_element_1.unit][unit_element_2.unit];
+            ans = second_number * ratio;
+        }
+        return ans;
     }
 
     // This function print the units_map
@@ -48,7 +74,7 @@ namespace ariel
     }
 
     //==========================================method operators============================================
-    
+
     void NumberWithUnits::read_units(ifstream &units_file)
     {
         ifstream units_file{"units.txt"};
@@ -109,77 +135,110 @@ namespace ariel
 
             units_map[unit_1][unit_2] = num_2;         // adds the first direction ->
             units_map[unit_2][unit_1] = num_1 / num_2; // adds the opposite direction <-
+
+            // finds transitive relations between the units in the map
+            // iterates through the units_map
+            for (auto itr = units_map.begin(); itr != units_map.end(); ++itr)
+            {
+                // takes the inner unit
+                auto itr_in = itr->second.begin();
+                // iterates through the units_map
+                for (auto itr_out = units_map.begin(); itr_out != units_map.end(); ++itr_out)
+                {
+                    // checks if the inner unit equals to the outer unit
+                    if (itr_in->first == itr_out->first)
+                    {
+                        // adds the first direction ->
+                        units_map[itr_out->first][itr_in->first] = itr_in->second * itr_out->second; // TODO
+                        // adds the opposite direction <-
+                        units_map[itr_in->first][itr_out->first] = (1 / itr_in->second) / itr_out->second;
+                    }
+                }
+            }
         }
     }
 
     // overloading the arithmetic operators
     // positive
-    NumberWithUnits operator+(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    NumberWithUnits NumberWithUnits::operator+(const NumberWithUnits &unit_element)
     {
-        return unit_element_1;
+        double sum = unit_convert(*this, unit_element);
+        return NumberWithUnits(this->number + sum, this->unit);
     }
-    NumberWithUnits operator+=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    NumberWithUnits NumberWithUnits::operator+=(const NumberWithUnits &unit_element)
     {
-        return unit_element_1;
+        double sum = unit_convert(*this, unit_element);
+        this->number += sum;
+        return NumberWithUnits(*this);
     }
 
-    NumberWithUnits operator+(const NumberWithUnits &unit_element)
+    NumberWithUnits NumberWithUnits::operator+()
     {
-        return unit_element;
+        double positive_value = std::abs(this->number);
+        return NumberWithUnits{positive_value, this->unit};
     }
     // negative
-    NumberWithUnits operator-(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    NumberWithUnits NumberWithUnits::operator-(const NumberWithUnits &unit_element)
     {
-        return unit_element_1;
+        double sum = unit_convert(*this, unit_element);
+        return NumberWithUnits(this->number - sum, this->unit);
     }
-    NumberWithUnits operator-=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    NumberWithUnits NumberWithUnits::operator-=(const NumberWithUnits &unit_element)
     {
-        return unit_element_1;
+        double sum = unit_convert(*this, unit_element);
+        this->number -= sum;
+        return NumberWithUnits(*this);
     }
-    NumberWithUnits operator-(const NumberWithUnits &unit_element)
+    NumberWithUnits NumberWithUnits::operator-()
     {
-        return unit_element;
+        double negatice_value = std::abs(this->number) * -1;
+        return NumberWithUnits{negatice_value, this->unit};
     }
 
     // overloading equality operators
-    bool operator>(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    bool NumberWithUnits::operator>(const NumberWithUnits &unit_element)
     {
-        return true;
+        double num_1 = this->number;
+        double num_2 = unit_convert(*this, unit_element);
+        return (num_1 - num_2 > epsilon);
     }
-    bool operator>=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    bool NumberWithUnits::operator>=(const NumberWithUnits &unit_element)
     {
-        return true;
+        return (*this > unit_element || *this == unit_element);
     }
-    bool operator<(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    bool NumberWithUnits::operator<(const NumberWithUnits &unit_element)
     {
-        return true;
+        double num_1 = this->number;
+        double num_2 = unit_convert(*this, unit_element);
+        return (num_1 - num_2 < epsilon);
     }
-    bool operator<=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    bool NumberWithUnits::operator<=(const NumberWithUnits &unit_element)
     {
-        return true;
+        return (*this < unit_element || *this == unit_element);
     }
-    bool operator==(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    bool NumberWithUnits::operator==(const NumberWithUnits &unit_element) // TODO: check for recursion
     {
-        return true;
+        double num_1 = this->number;
+        double num_2 = unit_convert(*this, unit_element);
+        double sum = num_1 - num_2;
+        return (sum >= 0 && sum <= epsilon);
     }
-    bool operator!=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2)
+    bool NumberWithUnits::operator!=(const NumberWithUnits &unit_element)
     {
-        return true;
+        return *this != unit_element;
     }
 
     // overloading multiplication operator
     // direction: ->
-    NumberWithUnits operator*(const NumberWithUnits &unit_element, double num)
+    NumberWithUnits NumberWithUnits::operator*(double num)
     {
-        return unit_element;
+        return NumberWithUnits{this->number * num, this->unit};
     }
-    // NumberWithUnits operator*=(double num); // TODO: ?
     // direction: <-
     NumberWithUnits operator*(double num, const NumberWithUnits &unit_element)
     {
-        return unit_element;
+        return NumberWithUnits{unit_element.number * num, unit_element.unit};
     }
-    // friend NumberWithUnits operator*=(double num, const NumberWithUnits &unit_element); // TODO: ?
 
     // friend global overloading I/O operators
     std::istream &operator>>(istream &is, const NumberWithUnits &input_unit_element)

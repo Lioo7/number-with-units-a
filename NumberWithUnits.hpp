@@ -8,33 +8,19 @@ namespace ariel
     class NumberWithUnits
     {
     private:
+        // variables
         double number;
         string unit;
 
+        // functions
+        void throw_error(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
+        bool is_valid(const NumberWithUnits &unit_element_1);
+        double unit_convert(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
+        void print_map();
+
     public:
-        // getters
-        double get_number() const
-        {
-            return this->number;
-        }
-
-        string get_unit() const
-        {
-            return this->unit;
-        }
-
-        // setters
-        void set_number(double new_number)
-        {
-            this->number = new_number;
-        }
-
         // constructor
-        NumberWithUnits(double number = 0, string unit = "none")
-        {
-            // this->number = number;
-            // this->unit = unit;
-        }
+        NumberWithUnits(double number, string unit){};
         // destructor
         ~NumberWithUnits(){};
 
@@ -42,21 +28,21 @@ namespace ariel
 
         // overloading the arithmetic operators
         // positive
-        friend NumberWithUnits operator+(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
-        friend NumberWithUnits operator+=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
-        friend NumberWithUnits operator+(const NumberWithUnits &unit_element);
+        NumberWithUnits operator+(const NumberWithUnits &unit_element);
+        NumberWithUnits operator+=(const NumberWithUnits &unit_element);
+        NumberWithUnits operator+();
         // negative
-        friend NumberWithUnits operator-(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
-        friend NumberWithUnits operator-=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
-        friend NumberWithUnits operator-(const NumberWithUnits &unit_element);
+        NumberWithUnits operator-(const NumberWithUnits &unit_element);
+        NumberWithUnits operator-=(const NumberWithUnits &unit_element);
+        NumberWithUnits operator-();
 
         // overloading equality operators
-        friend bool operator>(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
-        friend bool operator>=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
-        friend bool operator<(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
-        friend bool operator<=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
-        friend bool operator==(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
-        friend bool operator!=(const NumberWithUnits &unit_element_1, const NumberWithUnits &unit_element_2);
+        bool operator>(const NumberWithUnits &unit_element);
+        bool operator>=(const NumberWithUnits &unit_element);
+        bool operator<(const NumberWithUnits &unit_element);
+        bool operator<=(const NumberWithUnits &unit_element);
+        bool operator==(const NumberWithUnits &unit_element);
+        bool operator!=(const NumberWithUnits &unit_element);
 
         // overloading increment and decrement operators
         // prefix
@@ -86,11 +72,9 @@ namespace ariel
 
         // overloading multiplication operator
         // direction: ->
-        friend NumberWithUnits operator*(const NumberWithUnits &unit_element, double num);
-        // NumberWithUnits operator*=(double num); // TODO: ?
+        NumberWithUnits operator*(double num);
         // direction: <-
         friend NumberWithUnits operator*(double num, const NumberWithUnits &unit_element);
-        // friend NumberWithUnits operator*=(double num, const NumberWithUnits &unit_element); // TODO: ?
 
         // friend global overloading I/O operators
         friend std::istream &operator>>(istream &is, const NumberWithUnits &input_unit_element);
